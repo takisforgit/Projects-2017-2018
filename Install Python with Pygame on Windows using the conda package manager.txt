@@ -1,0 +1,12 @@
+https://conda.io/miniconda.html
+
+Open command propt window ( cmd )
+
+> conda create -n work python=3.5   Create environment for your work,στο directory που δίνεις την εντολή )
+> activate work ( activate new environment )
+
+> conda install anaconda-client ( for searching Anaconda cCloud for non default libraries like pygame )
+> anaconda search -t conda pygame
+
+From  the list found, choose the one that is right.
+>conda install --channel https://conda.anaconda.org/CogSci pygame
