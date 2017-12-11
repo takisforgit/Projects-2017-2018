@@ -1,73 +1,70 @@
-import Image, ImageTk
-from Tkinter import *
-import tkFileDialog
-import tkMessageBox
-import tkSimpleDialog
-
+from tkinter import *
+from tkinter import filedialog
+from tkinter import messagebox
+from tkinter import simpledialog
+import win32clipboard
 
 # function
 root = Tk()
-root.title("Notepad for python")
+root.title("Simple Notepad with Python")
 
 def About():
-      tkMessageBox.showinfo(title='About', message='Notepad for python')
+      messagebox.showinfo(title='About', message='Notepad for python')
 
 def Open():
-      print( 'Ouvrir Fichier')
+      print( 'Open File')
       myFormats =[
-            ('Fichier Love','*.lov'),
-            ('Fichier SHELL','*.py'),
-             ('Fichier Document','*.doc'),
-             ('Fichier Texte','*.txt'),
+             ('Python files','*.py'),
+             ('Word Document','*.doc'),
+             ('Simple text','*.txt'),
              ('All Files','*')
                          ]
-      fileOpen = tkFileDialog.askopenfilename(parent=root,filetypes=myFormats,title='Choisir fichier')
+      fileOpen = filedialog.askopenfilename(parent=root,filetypes=myFormats,title='Choose file')
       if fileOpen !='':
             T.delete(1.0,END)
             f =open(fileOpen, 'r+')
             T.insert(1.0, f.read())
             root.title(fileOpen)
-            print('fichier ouvert')
+            print('File Open')
       else:
-            print('fichier non compatible')
+            print('File not compatible')
             
 
 def RightOpen(self):
             Open()
 
 def Pyw():
-      rep=tkMessageBox.askyesno("","Run ??")
+      rep=messagebox.askyesno("","Run ??")
       if rep:
              T.tag_add(SEL, "1.0",END)
              
 def effacerZone():
-      rep=tkMessageBox.askyesno("","nouveau??")
+      rep=messagebox.askyesno("Create New file","New??")
       if rep:
             T.delete(1.0,END)
 
              
 def effaceron():
-      rep=tkMessageBox.askyesno("","effacer??")
+      rep=messagebox.askyesno("Delete All","Are you sure ?")
       if rep:
             T.delete(1.0,END)
             
 def Save():
-      tkMessageBox.showinfo('Sauvez fichier','Sauvez fichier')
+      messagebox.showinfo('Save file','Save file')
       myFormats =[
-            ('Fichier Love','*.lov'),
-            ('Fichier SHELL','*.py'),
-             ('Fichier Document','*.doc'),
-             ('Fichier Texte','*.txt'),
-            ('All Files','*')
+             ('Python files','*.py'),
+             ('Word Document','*.doc'),
+             ('Simple text','*.txt'),
+             ('All Files','*')
                           ]
-      fileName = tkFileDialog.asksaveasfilename(parent=root, filetypes=myFormats,title='Sauvez sous')
+      fileName = filedialog.asksaveasfilename(parent=root, filetypes=myFormats,title='Save...')
             
       if fileName !='':
             f=open(fileName, 'w')
             f.write(T.get(1.0,END))
-            tkMessageBox.showinfo('Fichier sauver','Fichier sauvez')
+            messagebox.showinfo('File saved','File saved')
       else:
-            tkMessageBox.showinfo('not saved','not saved')
+            messagebox.showinfo('NOT saved','File not saved')
             
 def RightSave(self):
             Save()
@@ -79,64 +76,72 @@ def RightSelAll():
             T.tag_add(SEL, "1.0", END)
 
 def Copy():
-            T.event_generate('<Control-c')
+            T.event_generate('<Control-c>')
 
 def getText():
-      w.OpenClipboard()
-      d=w.GetClipboardData(win32con.CF_TEXT)
-      w.CloseClipboard()
+      win32clipboard.OpenClipboard()
+      try:
+            clip1 = win32clipboard.GetClipboardData()
+            print(clip1)
+      except TypeError:
+            messagebox.showinfo('ATTENTION','Nothing exists in Clipboard !!!')
+      win32clipboard.CloseClipboard()
 
 
-def setText(aType,aString):
-      w.Open.Clipboard()
-      w.emptyClipboard()
-      w.setClipboardData(aType,aString)
-      w.CloseClipboard()
+def setText():
+      win32clipboard.OpenClipboard()
+      try:
+            clip2 = win32clipboard.GetClipboardData()
+            win32clipboard.SetClipboardText(clip2)
+      except TypeError:
+            messagebox.showinfo('ATTENTION','Nothing exists in Clipboard !!!')
+      win32clipboard.EmptyClipboard()
+      win32clipboard.CloseClipboard()
+      
 
 def RightClickMenu(event):
             popup.tk_popup(event.x_root+42, event.y_root+10,0)
             popup.grab_release()
-            st.config(cursor='hand2')
-def main(event):
-      st.config(cursor='hand2')
-      
+##def main(event):
+##      st.config(cursor='hand2')
+##      
 def Quitter():
-      rep=tkMessageBox.askyesno("Confirmer","Voulez vous quitter ?")
+      rep=messagebox.askyesno("Confirm","Really quit ?")
       if rep:
             root.quit()
             
-def comMenuAPropos():                                                                        ###
-    tkMessageBox.showinfo(                                                                   ###
-            "A propos de...",                                                                ###
-            "     Notepad pour python\n\n" )
+def comMenuAPropos():                                                                        
+    messagebox.showinfo(                                                                   
+            "Just a ...",                                                                
+            "     Notepad for python\n\n" )
             
-barreDeMenus = Menu(root)                                                             ###
-root.config(menu = barreDeMenus)                                                      ###
+MenuBar = Menu(root)                                                             
+root.config(menu = MenuBar)                                                      
 
-menuFichier = Menu(barreDeMenus)                                                             ###
-barreDeMenus.add_cascade(label="Fichier", menu=menuFichier)                                  ###
+menuFichier = Menu(MenuBar)                                                             
+MenuBar.add_cascade(label="File", menu=menuFichier)                                  
 
-                      ###
-menuFichier.add_command(label="Nouveau", command=effacerZone)
-menuFichier.add_command(label="Ouvrir...", command=Open)                          ###
-menuFichier.add_command(label="Enregistrer sous...", command=Save)
-menuFichier.add_command(label="Enregistrer ", command=RightSave) ###
-menuFichier.add_separator()                                                                  ###
-menuFichier.add_command(label="Quitter", command=Quitter)
-###
-menuEdition = Menu(barreDeMenus)                                                             ###
-barreDeMenus.add_cascade(label="Edition", menu=menuEdition)
-menuEdition.add_command(label="copier", command=getText)
-menuEdition.add_command(label="coller", command=setText)
-menuEdition.add_command(label="selectionner tout", command=RightSelAll)
+                      
+menuFichier.add_command(label="New", command=effacerZone)
+menuFichier.add_command(label="Open...", command=Open)                         
+menuFichier.add_command(label="Save as...", command=Save)
+menuFichier.add_command(label="Save ", command=RightSave) 
+menuFichier.add_separator()                                                                  
+menuFichier.add_command(label="Quit", command=Quitter)
 
-menuPython =Menu(barreDeMenus)
-barreDeMenus.add_cascade(label="Pyshell", menu=menuPython)
+menuEdition = Menu(MenuBar)                                                             
+MenuBar.add_cascade(label="Edit", menu=menuEdition)
+menuEdition.add_command(label="Copy", command=getText)
+menuEdition.add_command(label="Paste", command=setText)
+menuEdition.add_command(label="Select All", command=RightSelAll)
+
+menuPython =Menu(MenuBar)
+MenuBar.add_cascade(label="Pyshell", menu=menuPython)
 menuPython.add_command(label="Run",command=Pyw)
 
-menuAide = Menu(barreDeMenus)                                                                ###
-barreDeMenus.add_cascade(label="Aide", menu=menuAide)                                        ###
-menuAide.add_command(label="A propos", command=comMenuAPropos)
+menuAide = Menu(MenuBar)                                                                
+MenuBar.add_cascade(label="Help", menu=menuAide)                                        
+menuAide.add_command(label="About", command=comMenuAPropos)
 
 s= Scrollbar(root)
 T= Text(root, wrap=WORD)
@@ -150,7 +155,7 @@ T.config(yscrollcommand=s.set)
 popup = Menu(root, tearoff=0)
 popup.add_command(label="Select All", command =RightSelAll)
 popup.add_command(label="Copy", command=Copy)
-popup.add_command(label="tout effacer", command=effaceron)
+popup.add_command(label="Delete All", command=effaceron)
 
 root.bind('<Button-3>', RightClickMenu)
 root.bind('<Control_L>'+'a',SelAll)
